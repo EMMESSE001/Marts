@@ -77,7 +77,7 @@
 
     <div id="welcome-overlay">
         <h2 style="color: #c92a42; margin-bottom: 25px; font-size: 1.6rem; text-align: center; padding: 0 20px;">Una sorpresa speciale per Martina... ❤️</h2>
-        <button class="btn-start" onclick="startSurprise()">Apri il Regalo 🎁</button>
+        <button class="btn-start" onclick="checkPasswordAndStart()">Apri il Regalo 🎁</button>
     </div>
 
     <audio id="bg-music" loop>
@@ -104,6 +104,18 @@
         const countdownElement = document.getElementById('countdown');
         const surpriseBtn = document.getElementById('surprise-btn');
         const emojis = ['❤️', '🎈', '💖', '💕', '💝', '✨', '🌸', '👑'];
+
+        // Funzione che controlla la password prima di mostrare il sito
+        function checkPasswordAndStart() {
+            const passwordInserita = prompt("Inserisci la parola d'ordine segreta per sbloccare la sorpresa: ❤️");
+            
+            // LA PASSWORD CORRENTE È: marti2026
+            if (passwordInserita === "0103") {
+                startSurprise();
+            } else if (passwordInserita !== null) {
+                alert("Password sbagliata! Riprova, la sorpresa è solo per Martina. 🤫");
+            }
+        }
 
         function startSurprise() {
             document.getElementById('welcome-overlay').style.display = 'none';
