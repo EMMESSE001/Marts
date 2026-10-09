@@ -62,15 +62,32 @@
             justify-content: center; align-items: center; z-index: 50; padding: 20px; text-align: center;
         }
         .love-photo {
-            max-width: 90%; max-height: 55vh; border-radius: 20px;
+            max-width: 90%; max-height: 50vh; border-radius: 20px;
             border: 8px solid white; box-shadow: 0 15px 35px rgba(0,0,0,0.15); margin-bottom: 25px; object-fit: cover;
         }
-        .love-text-1 { color: #c92a42; font-size: 2.5rem; font-weight: bold; margin-bottom: 10px; }
+        .love-text-1 { color: #c92a42; font-size: 2.5rem; font-weight: bold; margin-bottom: 10px; animation: bounce 2s infinite; }
         .love-text-2 { color: #d63384; font-size: 1.8rem; font-style: italic; font-weight: bold; }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
         .signature { position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%); color: #a38f92; font-size: 0.9rem; font-style: italic; letter-spacing: 2px; z-index: 10; }
-        .floating-item { position: absolute; bottom: -60px; user-select: none; pointer-events: none; z-index: 1; animation: floatUp linear forwards, wobble ease-in-out infinite alternate; }
-        @keyframes floatUp { 0% { transform: translateY(0); opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { transform: translateY(-110vh); opacity: 0; } }
-        @keyframes wobble { 0% { margin-left: -20px; } 100% { margin-left: 20px; } }
+        
+        /* Modifica fondamentale: z-index a 99 e opacità forzata */
+        .floating-item { 
+            position: absolute; 
+            bottom: -60px; 
+            user-select: none; 
+            pointer-events: none; 
+            z-index: 99; /* Portato in primissimo piano sopra a tutto */
+            opacity: 1 !important;
+            animation: floatUp linear forwards, wobble ease-in-out infinite alternate;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.25);
+        }
+        @keyframes floatUp { 0% { transform: translateY(0); } 100% { transform: translateY(-115vh); } }
+        @keyframes wobble { 0% { margin-left: -25px; } 100% { margin-left: 25px; } }
     </style>
 </head>
 <body>
@@ -80,8 +97,12 @@
         <button class="btn-start" onclick="checkPasswordAndStart()">Apri il Regalo 🎁</button>
     </div>
 
+    <!-- Lettori Audio -->
     <audio id="bg-music" loop>
         <source src="perfect.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="birthday-music" loop>
+        <source src="auguri.mp3" type="audio/mpeg">
     </audio>
 
     <div class="card" id="main-card">
@@ -103,13 +124,10 @@
         const targetDate = new Date('2026-10-28T00:01:00').getTime();
         const countdownElement = document.getElementById('countdown');
         const surpriseBtn = document.getElementById('surprise-btn');
-        const emojis = ['❤️', '🎈', '💖', '💕', '💝', '✨', '🌸', '👑'];
+        let emojis = ['❤️', '🎈', '💖', '💕', '💝', '✨', '🌸', '👑'];
 
-        // Funzione che controlla la password prima di mostrare il sito
         function checkPasswordAndStart() {
             const passwordInserita = prompt("Inserisci la parola d'ordine segreta per sbloccare la sorpresa: ❤️");
-            
-            // LA PASSWORD CORRENTE È: marti2026
             if (passwordInserita === "0103") {
                 startSurprise();
             } else if (passwordInserita !== null) {
@@ -123,8 +141,7 @@
             setInterval(updateTimer, 1000);
             setInterval(createFloatingItem, 300);
             try {
-                const audio = document.getElementById('bg-music');
-                if (audio) { audio.play(); }
+                document.getElementById('bg-music').play();
             } catch (e) { console.log("Audio bloccato."); }
         }
 
@@ -148,6 +165,15 @@
         function revealPhoto() {
             document.getElementById('main-card').style.display = 'none';
             document.getElementById('photo-screen').style.display = 'flex';
+
+            try {
+                document.getElementById('bg-music').pause();
+                document.getElementById('birthday-music').play();
+            } catch(e) { console.log("Errore cambio audio"); }
+
+            // Lista di elementi ricca e colorata
+            emojis = ['🎈', '🎉', '🥳', '🎁', '🎂', '✨', '🐱', '🐈', '🐾', '🎈'];
+            setInterval(createFloatingItem, 120);
         }
 
         function createFloatingItem() {
@@ -155,9 +181,9 @@
             item.classList.add('floating-item');
             item.innerText = emojis[Math.floor(Math.random() * emojis.length)];
             item.style.left = (Math.random() * 90) + "vw";
-            const size = Math.random() * 25 + 22;
+            const size = Math.random() * 20 + 26; // Dimensione minima aumentata a 26px per visibilità
             item.style.fontSize = size + "px";
-            const floatDuration = Math.random() * 3 + 4;
+            const floatDuration = Math.random() * 3 + 3.5;
             item.style.animationName = 'floatUp, wobble';
             item.style.animationDuration = floatDuration + 's, ' + (Math.random() * 1 + 1) + 's';
             document.body.appendChild(item);
