@@ -56,13 +56,14 @@
             background: linear-gradient(135deg, #ff4b6b 0%, #ff758c 100%);
             color: white; cursor: pointer; box-shadow: 0 5px 15px rgba(255, 75, 107, 0.4);
         }
-        #photo-screen {
+        #photo-screen,#photo-screen2, #photo-screen3 {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(255, 227, 232, 0.98); display: none; flex-direction: column;
             justify-content: center; align-items: center; z-index: 50; padding: 20px; text-align: center;
         }
+
         .love-photo {
-            max-width: 90%; max-height: 50vh; border-radius: 20px;
+            max-width: 110%; max-height: 70vh; border-radius: 20px;
             border: 8px solid white; box-shadow: 0 15px 35px rgba(0,0,0,0.15); margin-bottom: 25px; object-fit: cover;
         }
         .love-text-1 { color: #c92a42; font-size: 2.5rem; font-weight: bold; margin-bottom: 10px; animation: bounce 2s infinite; }
@@ -72,16 +73,14 @@
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-10px); }
         }
-
         .signature { position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%); color: #a38f92; font-size: 0.9rem; font-style: italic; letter-spacing: 2px; z-index: 10; }
         
-        /* Modifica fondamentale: z-index a 99 e opacità forzata */
         .floating-item { 
             position: absolute; 
             bottom: -60px; 
             user-select: none; 
             pointer-events: none; 
-            z-index: 99; /* Portato in primissimo piano sopra a tutto */
+            z-index: 99; 
             opacity: 1 !important;
             animation: floatUp linear forwards, wobble ease-in-out infinite alternate;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.25);
@@ -112,7 +111,28 @@
         <button id="surprise-btn" class="btn-surprise" disabled onclick="revealPhoto()">🔒 Sblocca la sorpresa a mezzanotte</button>
     </div>
 
+    <!-- Schermata 1 -->
     <div id="photo-screen">
+        <video id="video1" class="love-photo"  playsinline preload="auto">
+            <source src="candelina.mp4" type="video/mp4">
+        </video>
+        <div class="love-text-1">Tanti auguri amore mio ❤️</div>
+        <div class="love-text-2">Ti amissimo</div>
+        <button class="btn-surprise active" onclick="revealPhoto2()" style="margin-top: 20px; width: auto; cursor: pointer;">Avanti</button>
+    </div>
+
+    <!-- Schermata 2 -->
+    <div id="photo-screen2">
+        <video id="video2" class="love-photo"  playsinline preload="auto">
+            <source src="frase.mp4" type="video/mp4">
+        </video>
+        <div class="love-text-1">Tanti auguri amore mio ❤️</div>
+        <div class="love-text-2">Ti amissimo</div>
+        <button class="btn-surprise active" onclick="revealPhoto3()" style="margin-top: 20px; width: auto; cursor: pointer;">Avanti</button>
+    </div>
+
+    <!-- Schermata 3 -->
+    <div id="photo-screen3">
         <img src="foto.jpg" alt="Noi ❤️" class="love-photo">
         <div class="love-text-1">Tanti auguri amore mio ❤️</div>
         <div class="love-text-2">Ti amissimo</div>
@@ -121,19 +141,20 @@
     <div class="signature">andy potter</div>
 
     <script>
-        const targetDate = new Date('2026-10-28T00:01:00').getTime();
+
+        const targetDate = new Date('2026-10-28T00:00:00').getTime(); 
         const countdownElement = document.getElementById('countdown');
         const surpriseBtn = document.getElementById('surprise-btn');
         let emojis = ['❤️', '🎈', '💖', '💕', '💝', '✨', '🌸', '👑'];
 
-        function checkPasswordAndStart() {
+        window.checkPasswordAndStart = function() {
             const passwordInserita = prompt("Inserisci la parola d'ordine segreta per sbloccare la sorpresa: ❤️");
             if (passwordInserita === "0103") {
                 startSurprise();
             } else if (passwordInserita !== null) {
                 alert("Password sbagliata! Riprova, la sorpresa è solo per Martina. 🤫");
             }
-        }
+        };
 
         function startSurprise() {
             document.getElementById('welcome-overlay').style.display = 'none';
@@ -142,38 +163,32 @@
             setInterval(createFloatingItem, 300);
             try {
                 document.getElementById('bg-music').play();
-            } catch (e) { console.log("Audio bloccato."); }
+            } catch (e) { console.log("Audio iniziale bloccato."); }
         }
 
         function updateTimer() {
             const now = new Date().getTime();
             const difference = targetDate - now;
-            if (difference > 0) {
-                const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((difference % (1000 * 60)) / 1000);
-                countdownElement.innerHTML = days.toString().padStart(2, '0') + "d " + hours.toString().padStart(2, '0') + "h " + minutes.toString().padStart(2, '0') + "m " + seconds.toString().padStart(2, '0') + "s";
-            } else {
-                countdownElement.innerHTML = "Buon Compleanno Martina! 🎉";
+
+            if (difference <= 0) {
+                countdownElement.innerHTML = "00d 00h 00m 00s";
+                countdownElement.style.background = "linear-gradient(135deg, #11998e 0%, #38ef7d 100%)";
+                surpriseBtn.innerHTML = "🔓 Sblocca la sorpresa per Martina! ❤️";
                 surpriseBtn.disabled = false;
-                surpriseBtn.innerText = "💝 APRI LA TUA SORPRESA! 💝";
                 surpriseBtn.classList.add('active');
+                return;
             }
-        }
 
-        function revealPhoto() {
-            document.getElementById('main-card').style.display = 'none';
-            document.getElementById('photo-screen').style.display = 'flex';
+            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((difference % (1000 * 60)) / 1000);
 
-            try {
-                document.getElementById('bg-music').pause();
-                document.getElementById('birthday-music').play();
-            } catch(e) { console.log("Errore cambio audio"); }
-
-            // Lista di elementi ricca e colorata
-            emojis = ['🎈', '🎉', '🥳', '🎁', '🎂', '✨', '🐱', '🐈', '🐾', '🎈'];
-            setInterval(createFloatingItem, 120);
+            countdownElement.innerHTML = 
+                (days < 10 ? "0" + days : days) + "d " + 
+                (hours < 10 ? "0" + hours : hours) + "h " + 
+                (minutes < 10 ? "0" + minutes : minutes) + "m " + 
+                (seconds < 10 ? "0" + seconds : seconds) + "s";
         }
 
         function createFloatingItem() {
@@ -181,7 +196,7 @@
             item.classList.add('floating-item');
             item.innerText = emojis[Math.floor(Math.random() * emojis.length)];
             item.style.left = (Math.random() * 90) + "vw";
-            const size = Math.random() * 20 + 26; // Dimensione minima aumentata a 26px per visibilità
+            const size = Math.random() * 20 + 26; 
             item.style.fontSize = size + "px";
             const floatDuration = Math.random() * 3 + 3.5;
             item.style.animationName = 'floatUp, wobble';
@@ -189,6 +204,36 @@
             document.body.appendChild(item);
             setTimeout(() => { item.remove(); }, floatDuration * 1000);
         }
-    </script>
-</body>
+
+        window.revealPhoto = function() {
+	    document.getElementById('main-card').style.display = 'none';
+	    document.getElementById('photo-screen').style.display = 'flex';
+	    const v1 = document.getElementById('video1');
+	    if(v1) { 
+		v1.load(); v1.play().catch(e => console.log("Riproduzione forzata v1 bloccata")); 
+	    }
+	    try {
+	        document.getElementById('bg-music').pause();
+		document.getElementById('birthday-music').pause();
+		} catch (e) { console.log("Errore traccia audio."); }
+	};
+	window.revealPhoto2 = function() {
+	    document.getElementById('photo-screen').style.display = 'none';
+	    document.getElementById('photo-screen2').style.display = 'flex';
+	    const v2 = document.getElementById('video2');
+	    if(v2) { 
+		v2.load(); v2.play().catch(e => console.log("Riproduzione forzata v2 bloccata")); 
+	    }
+	};
+	window.revealPhoto3 = function() {
+	    document.getElementById('photo-screen2').style.display = 'none';
+	    document.getElementById('photo-screen3').style.display = 'flex';
+	    try {
+		document.getElementById('birthday-music').play();
+		} catch (e) { console.log("Errore traccia audio."); }
+
+	};
+	
+       </script>
+   </body>
 </html>
