@@ -116,6 +116,9 @@
         <video id="video1" class="love-photo"  playsinline preload="auto">
             <source src="candelina.mp4" type="video/mp4">
         </video>
+	<button onclick="togglePlay('video1', this)" style="background: linear-gradient(135deg, #ff4b6b 0%, #ff758c 100%); color: #FFFFFF; border: 2px solid #ffccd5; padding: 6px 16px; font-size: 0.9rem; font-weight: bold; border-radius: 20px; cursor: pointer; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); backdrop-filter: blur(5px); display: inline-flex; align-items: center; gap: 5px; transition: all 0.2s;">
+            ⏸️ Pausa
+        </button>
         <div class="love-text-1">Tanti auguri amore mio ❤️</div>
         <div class="love-text-2">Ti amissimo</div>
         <button class="btn-surprise active" onclick="revealPhoto2()" style="margin-top: 20px; width: auto; cursor: pointer;">Avanti</button>
@@ -126,6 +129,9 @@
         <video id="video2" class="love-photo"  playsinline preload="auto">
             <source src="frase.mp4" type="video/mp4">
         </video>
+	 <button onclick="togglePlay('video2', this)" style="background: linear-gradient(135deg, #ff4b6b 0%, #ff758c 100%); color: #FFFFFF; border: 2px solid #ffccd5; padding: 6px 16px; font-size: 0.9rem; font-weight: bold; border-radius: 20px; cursor: pointer; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); backdrop-filter: blur(5px); display: inline-flex; align-items: center; gap: 5px; transition: all 0.2s;">
+            ⏸️ Pausa
+        </button>
         <div class="love-text-1">Tanti auguri amore mio ❤️</div>
         <div class="love-text-2">Ti amissimo</div>
         <button class="btn-surprise active" onclick="revealPhoto3()" style="margin-top: 20px; width: auto; cursor: pointer;">Avanti</button>
@@ -234,6 +240,24 @@
 
 	};
 	
+        window.togglePlay = function(videoId, buttonElement) {
+            const video = document.getElementById(videoId);
+            if (video) {
+                if (video.paused) {
+                    video.play();
+                    buttonElement.innerHTML = "⏸️ Pausa";
+                    buttonElement.style.background = "linear-gradient(135deg, #ff4b6b 0%, #ff758c 100%)";
+		    buttonElement.style.color = "white";
+
+                } else {
+                    video.pause();
+                    buttonElement.innerHTML = "▶️ Riproduci";
+                    buttonElement.style.background = "linear-gradient(135deg, #ff4b6b 0%, #ff758c 100%)";
+                    buttonElement.style.color = "white";
+                }
+            }
+        };
+
        </script>
    </body>
 </html>
